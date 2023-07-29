@@ -33,15 +33,14 @@ public class BoardController {
 	 */
 	@PostMapping("board/register")
 	public String registerSubmit(BoardVO board) {
+		String location = null;
 		try {
-			String message = bs.regist(board);
-			if(message != null) {
-				return "board/read";
-			}			
+			location = bs.regist(board);
+						
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "board/register";
+		return location;
 	}
 		
 	
@@ -56,12 +55,10 @@ public class BoardController {
 			if(board != null) {
 				model.addAttribute(board);
 				return "board/read";
-			}
-			
+			}			
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		
+		}		
 		return "board/listPage";
 	}
 
@@ -74,7 +71,6 @@ public class BoardController {
 		try {
 			BoardVO board = bs.read(bno);
 			model.addAttribute("boardVO", board);
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -87,13 +83,13 @@ public class BoardController {
 	 */
 	@PostMapping("board/modify")
 	public String modify(Model model, BoardVO board) {
+		String location = null;
 		try {
-			String msg = bs.modify(board);
-			model.addAttribute("msg",msg);
+			location = bs.modify(board);			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "redirect:read.jsp";
+		return location;
 	}
 
 	/**
@@ -101,24 +97,39 @@ public class BoardController {
 	 */
 	 @GetMapping("board/remove")
 	 public String remove(int bno, Model model) {
+		 String location = null;
 		 try {
-			bs.remove(bno);
-			
+			 location = bs.remove(bno);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		 return "redirect:listPage.jsp";
+		return location;
 	 }
 	
+	 @GetMapping("board/listAll")
+	 public String listAll(Model model) {
+		 try {
+			List<BoardVO> list = bs.listAll();
+			model.addAttribute("list", list);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		 return "board/listPage";
+	 }
+	 
 	/**
 	 *  페이징 처리 된 게시글 출력 페이지
 	 *  param : 요청 page, perPageNum 
 	 */
 	// board/listPage
 	 @GetMapping("board/listPage")
-	 public String listPage(Model model) {
-		 try {
-			Criteria cri = new Criteria();
+	 public String listPage(Model model, String page, Criteria cri) {
+		 try {			
+			if(page == null) {
+				page = "1";
+			}
+			cri.setPage(Integer.parseInt(page));
+			
 			PageMaker pm = bs.getPageMaker(cri);
 			List<BoardVO> list = bs.listCriteria(cri);		
 			model.addAttribute("list", list);
@@ -126,8 +137,7 @@ public class BoardController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		 
-		 return "/board/listPage";
+		 return "board/listPage";
 	 }
 
 	

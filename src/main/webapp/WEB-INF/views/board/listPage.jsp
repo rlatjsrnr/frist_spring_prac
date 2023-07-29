@@ -24,14 +24,14 @@
 		<c:forEach var="board" items="${list}">
 			<tr>
 				<td>${board.bno}</td>
-				<td><a href="read?Page={pm.mkQueryStr(pm.cri.page)}&bno=${board.bno}">${board.title}</a></td>
+				<td><a href="read?Page=${pm.mkQueryStr(pm.cri.page)}&bno=${board.bno}">${board.title}</a></td>
 				<td>${board.writer}</td>
 				<td><f:formatDate pattern="yyyy-MM-dd HH:mm" 
 					              value="${board.regdate}"/></td>
 				<td>${board.viewcnt}</td>
 			</tr>
 		</c:forEach>
-		<c:if test="${!empty pm and pm.maxPage > 1}">
+		<c:if test="${!empty pm and pm.maxPage > 1}">			
 			<tr>
 				<th colspan="5">
 					<c:if test="${pm.first}">
